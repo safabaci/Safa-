@@ -1,0 +1,44 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    # Contrôleur pour les axes linéaires X, Y, Z
+    linear_axes_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    # Contrôleur pour les axes rotatifs A, C
+    rotary_axes_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    # Contrôleur d'état (lecture des positions)
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+linear_axes_controller:
+  ros__parameters:
+    joints:
+      - joint_x
+      - joint_y
+      - joint_z
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+
+rotary_axes_controller:
+  ros__parameters:
+    joints:
+      - joint_a
+      - joint_c
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false

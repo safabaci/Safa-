@@ -1,0 +1,583 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dmg_mori_5axis">
+
+  <!-- MATERIAUX -->
+  <material name="machine_body"><color rgba="0.85 0.85 0.85 1.0"/></material>
+  <material name="machine_dark"><color rgba="0.25 0.25 0.28 1.0"/></material>
+  <material name="table_blue"><color rgba="0.08 0.25 0.55 1.0"/></material>
+  <material name="spindle_silver"><color rgba="0.75 0.75 0.78 1.0"/></material>
+  <material name="tool_yellow"><color rgba="0.85 0.70 0.05 1.0"/></material>
+  <material name="floor_concrete"><color rgba="0.60 0.60 0.58 1.0"/></material>
+  <material name="wall_color"><color rgba="0.88 0.86 0.80 1.0"/></material>
+  <material name="safety_yellow"><color rgba="0.95 0.80 0.00 1.0"/></material>
+  <material name="rack_metal"><color rgba="0.50 0.48 0.45 1.0"/></material>
+
+  <!-- MONDE -->
+  <link name="world"/>
+
+  <!-- SOL — fixe au monde avec collision solide -->
+  <joint name="world_to_floor" type="fixed">
+    <parent link="world"/>
+    <child link="floor_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="floor_link">
+    <visual>
+      <geometry><box size="14.0 12.0 0.10"/></geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <material name="floor_concrete"/>
+    </visual>
+    <collision>
+      <geometry><box size="14.0 12.0 0.10"/></geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="50000.0"/>
+      <origin xyz="0 0 -0.05"/>
+      <inertia ixx="10000" ixy="0" ixz="0"
+               iyy="10000" iyz="0" izz="10000"/>
+    </inertial>
+  </link>
+
+  <!-- MUR ARRIERE -->
+  <joint name="wall_back_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="wall_back"/>
+    <origin xyz="0 -5.5 0" rpy="0 0 0"/>
+  </joint>
+  <link name="wall_back">
+    <visual>
+      <geometry><box size="14.0 0.20 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+      <material name="wall_color"/>
+    </visual>
+    <collision>
+      <geometry><box size="14.0 0.20 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="5000"/>
+      <origin xyz="0 0 2.25"/>
+      <inertia ixx="500" ixy="0" ixz="0"
+               iyy="500" iyz="0" izz="500"/>
+    </inertial>
+  </link>
+
+  <!-- MUR GAUCHE -->
+  <joint name="wall_left_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="wall_left"/>
+    <origin xyz="-7.0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="wall_left">
+    <visual>
+      <geometry><box size="0.20 12.0 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+      <material name="wall_color"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.20 12.0 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="5000"/>
+      <origin xyz="0 0 2.25"/>
+      <inertia ixx="500" ixy="0" ixz="0"
+               iyy="500" iyz="0" izz="500"/>
+    </inertial>
+  </link>
+
+  <!-- MUR DROIT -->
+  <joint name="wall_right_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="wall_right"/>
+    <origin xyz="7.0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="wall_right">
+    <visual>
+      <geometry><box size="0.20 12.0 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+      <material name="wall_color"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.20 12.0 4.5"/></geometry>
+      <origin xyz="0 0 2.25" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="5000"/>
+      <origin xyz="0 0 2.25"/>
+      <inertia ixx="500" ixy="0" ixz="0"
+               iyy="500" iyz="0" izz="500"/>
+    </inertial>
+  </link>
+
+  <!-- LIGNE SECURITE SOL -->
+  <joint name="safety_line_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="safety_line"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="safety_line">
+    <visual>
+      <geometry><box size="5.0 0.15 0.002"/></geometry>
+      <origin xyz="0 2.2 0.001" rpy="0 0 0"/>
+      <material name="safety_yellow"/>
+    </visual>
+    <inertial>
+      <mass value="1"/>
+      <origin xyz="0 2.2 0.001"/>
+      <inertia ixx="0.01" ixy="0" ixz="0"
+               iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- ETABLI -->
+  <joint name="workbench_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="workbench"/>
+    <origin xyz="4.5 -3.5 0" rpy="0 0 0"/>
+  </joint>
+  <link name="workbench">
+    <visual>
+      <geometry><box size="2.2 0.8 0.90"/></geometry>
+      <origin xyz="0 0 0.45" rpy="0 0 0"/>
+      <material name="rack_metal"/>
+    </visual>
+    <collision>
+      <geometry><box size="2.2 0.8 0.90"/></geometry>
+      <origin xyz="0 0 0.45" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="120"/>
+      <origin xyz="0 0 0.45"/>
+      <inertia ixx="15" ixy="0" ixz="0"
+               iyy="15" iyz="0" izz="15"/>
+    </inertial>
+  </link>
+
+  <!-- ETAGERE OUTILS -->
+  <joint name="toolrack_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="toolrack"/>
+    <origin xyz="-5.0 -4.0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="toolrack">
+    <visual>
+      <geometry><box size="1.8 0.45 2.2"/></geometry>
+      <origin xyz="0 0 1.10" rpy="0 0 0"/>
+      <material name="rack_metal"/>
+    </visual>
+    <collision>
+      <geometry><box size="1.8 0.45 2.2"/></geometry>
+      <origin xyz="0 0 1.10" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="80"/>
+      <origin xyz="0 0 1.10"/>
+      <inertia ixx="15" ixy="0" ixz="0"
+               iyy="15" iyz="0" izz="15"/>
+    </inertial>
+  </link>
+
+  <!-- ARMOIRE CNC -->
+  <joint name="control_cabinet_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="control_cabinet"/>
+    <origin xyz="3.2 1.8 0" rpy="0 0 1.57"/>
+  </joint>
+  <link name="control_cabinet">
+    <visual>
+      <geometry><box size="0.90 0.55 1.85"/></geometry>
+      <origin xyz="0 0 0.925" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.90 0.55 1.85"/></geometry>
+      <origin xyz="0 0 0.925" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="200"/>
+      <origin xyz="0 0 0.925"/>
+      <inertia ixx="30" ixy="0" ixz="0"
+               iyy="30" iyz="0" izz="30"/>
+    </inertial>
+  </link>
+
+  <!-- =========================================================
+       MACHINE DMG MORI — posee sur le sol (z=0)
+       Masse totale reelle ~18000 kg
+  ========================================================= -->
+
+  <!-- Joint machine-sol : FIXED, la machine NE BOUGE PAS sur le sol -->
+  <joint name="base_joint" type="fixed">
+    <parent link="floor_link"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- SOCLE BETON (fondation) — masse 3000 kg, z commence a 0 -->
+  <link name="base_link">
+    <visual>
+      <geometry><box size="2.40 2.00 0.20"/></geometry>
+      <origin xyz="0 0 0.10" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <collision>
+      <geometry><box size="2.40 2.00 0.20"/></geometry>
+      <origin xyz="0 0 0.10" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="3000.0"/>
+      <origin xyz="0 0 0.10"/>
+      <inertia ixx="800" ixy="0" ixz="0"
+               iyy="800" iyz="0" izz="800"/>
+    </inertial>
+  </link>
+
+  <!-- CORPS PRINCIPAL — masse 5000 kg -->
+  <joint name="body_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="machine_body_link"/>
+    <origin xyz="0 0 0.20" rpy="0 0 0"/>
+  </joint>
+  <link name="machine_body_link">
+    <visual>
+      <geometry><box size="2.20 1.80 0.30"/></geometry>
+      <origin xyz="0 0 0.15" rpy="0 0 0"/>
+      <material name="machine_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="2.20 1.80 0.30"/></geometry>
+      <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="5000.0"/>
+      <origin xyz="0 0 0.15"/>
+      <inertia ixx="1200" ixy="0" ixz="0"
+               iyy="1200" iyz="0" izz="1200"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       AXE X — chariot transversal — masse 800 kg
+       Course reelle DMG MORI : ±450 mm
+       Vitesse max : 60 m/min = 1 m/s
+       Effort moteur : 12000 N
+  ===================================================== -->
+  <joint name="joint_x" type="prismatic">
+    <parent link="machine_body_link"/>
+    <child link="link_x"/>
+    <origin xyz="0 0 0.30" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-0.450" upper="0.450"
+           effort="12000" velocity="1.0"/>
+    <dynamics damping="500" friction="200"/>
+  </joint>
+
+  <link name="link_x">
+    <visual>
+      <geometry><box size="1.10 1.50 0.14"/></geometry>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <material name="machine_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="1.10 1.50 0.14"/></geometry>
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="800.0"/>
+      <origin xyz="0 0 0.07"/>
+      <!-- I = m*(a²+b²)/12 -->
+      <inertia ixx="156" ixy="0" ixz="0"
+               iyy="83"  iyz="0" izz="221"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       AXE Y — chariot longitudinal — masse 500 kg
+       Course reelle : ±350 mm
+       Vitesse max : 60 m/min
+  ===================================================== -->
+  <joint name="joint_y" type="prismatic">
+    <parent link="link_x"/>
+    <child link="link_y"/>
+    <origin xyz="0 0 0.14" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-0.350" upper="0.350"
+           effort="10000" velocity="1.0"/>
+    <dynamics damping="400" friction="150"/>
+  </joint>
+
+  <link name="link_y">
+    <visual>
+      <geometry><box size="1.00 1.00 0.12"/></geometry>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <material name="machine_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="1.00 1.00 0.12"/></geometry>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="500.0"/>
+      <origin xyz="0 0 0.06"/>
+      <inertia ixx="83"  ixy="0" ixz="0"
+               iyy="83"  iyz="0" izz="167"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       AXE A — berceau rotatif — masse 300 kg
+       Course reelle : -110° a +30° (en radians)
+       Couple moteur : 1800 Nm
+  ===================================================== -->
+  <joint name="joint_a" type="revolute">
+    <parent link="link_y"/>
+    <child link="link_a"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.920" upper="0.524"
+           effort="1800" velocity="0.523"/>
+    <dynamics damping="80" friction="30"/>
+  </joint>
+
+  <!-- Berceau en U -->
+  <link name="link_a">
+    <visual>
+      <geometry><box size="0.70 0.14 0.40"/></geometry>
+      <origin xyz="0 0 0.20" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.70 0.14 0.40"/></geometry>
+      <origin xyz="0 0 0.20" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="300.0"/>
+      <origin xyz="0 0 0.20"/>
+      <inertia ixx="8.5" ixy="0" ixz="0"
+               iyy="13.4" iyz="0" izz="13.4"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       AXE C — plateau tournant — masse 150 kg
+       Course : rotation continue 360°
+       Couple moteur : 800 Nm
+       Vitesse max : 100 tr/min = 10.47 rad/s
+  ===================================================== -->
+  <joint name="joint_c" type="continuous">
+    <parent link="link_a"/>
+    <child link="link_c"/>
+    <origin xyz="0 0 0.40" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="800" velocity="10.47"/>
+    <dynamics damping="40" friction="15"/>
+  </joint>
+
+  <!-- Plateau tournant avec rainures en T -->
+  <link name="link_c">
+    <visual>
+      <geometry><cylinder radius="0.300" length="0.07"/></geometry>
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <material name="table_blue"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.300" length="0.07"/></geometry>
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="150.0"/>
+      <origin xyz="0 0 0.035"/>
+      <!-- I cylindre = 0.5*m*r² -->
+      <inertia ixx="3.56" ixy="0" ixz="0"
+               iyy="3.56" iyz="0" izz="6.75"/>
+    </inertial>
+  </link>
+
+  <!-- Rainure T sur plateau -->
+  <joint name="tslot1_joint" type="fixed">
+    <parent link="link_c"/>
+    <child link="tslot1"/>
+    <origin xyz="0 0 0.07" rpy="0 0 0"/>
+  </joint>
+  <link name="tslot1">
+    <visual>
+      <geometry><box size="0.52 0.04 0.012"/></geometry>
+      <origin xyz="0 0 0.006" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <inertial>
+      <mass value="2"/>
+      <origin xyz="0 0 0.006"/>
+      <inertia ixx="0.01" ixy="0" ixz="0"
+               iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       COLONNE VERTICALE — masse 4000 kg
+       Montee sur le cote arriere du bati
+  ===================================================== -->
+  <joint name="column_joint" type="fixed">
+    <parent link="machine_body_link"/>
+    <child link="column_link"/>
+    <origin xyz="0 -0.80 0.30" rpy="0 0 0"/>
+  </joint>
+
+  <link name="column_link">
+    <visual>
+      <geometry><box size="0.55 0.40 1.60"/></geometry>
+      <origin xyz="0 0 0.80" rpy="0 0 0"/>
+      <material name="machine_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.55 0.40 1.60"/></geometry>
+      <origin xyz="0 0 0.80" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="4000.0"/>
+      <origin xyz="0 0 0.80"/>
+      <inertia ixx="800" ixy="0" ixz="0"
+               iyy="800" iyz="0" izz="200"/>
+    </inertial>
+  </link>
+
+  <!-- Traverse horizontale -->
+  <joint name="crossbeam_joint" type="fixed">
+    <parent link="column_link"/>
+    <child link="crossbeam_link"/>
+    <origin xyz="0 0.22 1.50" rpy="0 0 0"/>
+  </joint>
+  <link name="crossbeam_link">
+    <visual>
+      <geometry><box size="0.45 0.32 0.22"/></geometry>
+      <origin xyz="0 0 0.11" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.45 0.32 0.22"/></geometry>
+      <origin xyz="0 0 0.11" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="200"/>
+      <origin xyz="0 0 0.11"/>
+      <inertia ixx="8" ixy="0" ixz="0"
+               iyy="8" iyz="0" izz="8"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       AXE Z — broche verticale — masse 400 kg
+       Course reelle : 0 a 700 mm
+       Vitesse max : 60 m/min
+       Effort : 15000 N (poids broche + gravite)
+  ===================================================== -->
+  <joint name="joint_z" type="prismatic">
+    <parent link="column_link"/>
+    <child link="link_z"/>
+    <origin xyz="0 0.22 1.50" rpy="0 0 0"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="0.0" upper="0.700"
+           effort="15000" velocity="1.0"/>
+    <!-- Amortissement eleve : contre la gravite -->
+    <dynamics damping="800" friction="300"/>
+  </joint>
+
+  <link name="link_z">
+    <visual>
+      <geometry><box size="0.38 0.30 0.32"/></geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="machine_body"/>
+    </visual>
+    <collision>
+      <geometry><box size="0.38 0.30 0.32"/></geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="400.0"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="14.9" ixy="0" ixz="0"
+               iyy="14.9" iyz="0" izz="18.3"/>
+    </inertial>
+  </link>
+
+  <!-- =====================================================
+       BROCHE PRINCIPALE — masse 120 kg
+       Vitesse max reelle : 18000 tr/min
+  ===================================================== -->
+  <joint name="spindle_joint" type="fixed">
+    <parent link="link_z"/>
+    <child link="spindle_link"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="spindle_link">
+    <visual>
+      <geometry><cylinder radius="0.075" length="0.25"/></geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+      <material name="spindle_silver"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.075" length="0.25"/></geometry>
+      <origin xyz="0 0 -0.125" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="120.0"/>
+      <origin xyz="0 0 -0.125"/>
+      <!-- I cylindre creux approx -->
+      <inertia ixx="0.72" ixy="0" ixz="0"
+               iyy="0.72" iyz="0" izz="0.34"/>
+    </inertial>
+  </link>
+
+  <!-- CONE PORTE-OUTIL HSK-A63 -->
+  <joint name="toolholder_joint" type="fixed">
+    <parent link="spindle_link"/>
+    <child link="toolholder_link"/>
+    <origin xyz="0 0 -0.25" rpy="0 0 0"/>
+  </joint>
+  <link name="toolholder_link">
+    <visual>
+      <geometry><cylinder radius="0.042" length="0.09"/></geometry>
+      <origin xyz="0 0 -0.045" rpy="0 0 0"/>
+      <material name="machine_dark"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.042" length="0.09"/></geometry>
+      <origin xyz="0 0 -0.045" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="8.0"/>
+      <origin xyz="0 0 -0.045"/>
+      <inertia ixx="0.02" ixy="0" ixz="0"
+               iyy="0.02" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- FRAISE D16 — masse 0.4 kg -->
+  <joint name="tool_joint" type="fixed">
+    <parent link="toolholder_link"/>
+    <child link="tool_link"/>
+    <origin xyz="0 0 -0.09" rpy="0 0 0"/>
+  </joint>
+  <link name="tool_link">
+    <visual>
+      <geometry><cylinder radius="0.008" length="0.10"/></geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+      <material name="tool_yellow"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.008" length="0.10"/></geometry>
+      <origin xyz="0 0 -0.05" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.4"/>
+      <origin xyz="0 0 -0.05"/>
+      <inertia ixx="0.0003" ixy="0" ixz="0"
+               iyy="0.0003" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+</robot>

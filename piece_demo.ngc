@@ -1,0 +1,101 @@
+; ============================================
+; Programme G-code - Pièce démo DMG MORI 5X
+; Usinage d'un disque avec poche centrale
+; ============================================
+
+; --- INITIALISATION ---
+G21          ; Unités en millimètres
+G90          ; Mode absolu
+G17          ; Plan XY
+F500         ; Vitesse d'avance 500 mm/min
+S8000        ; Vitesse broche 8000 tr/min
+M03          ; Démarrer broche sens horaire
+
+; --- POSITION HOME ---
+G00 X0 Y0 Z50
+
+; --- APPROCHE ---
+G00 X0 Y0 Z5
+G01 Z-2 F200
+
+; --- CONTOUR EXTÉRIEUR (cercle 80mm) ---
+G01 X80 Y0 F500
+G02 X80 Y0 I-80 J0    ; Arc complet
+
+; --- PASSE 2 contour ---
+G01 Z-4 F200
+G02 X80 Y0 I-80 J0
+
+; --- POCHE CENTRALE CARRÉE ---
+G00 Z5
+G00 X-30 Y-30
+G01 Z-3 F200
+G01 X30  Y-30 F400
+G01 X30  Y30
+G01 X-30 Y30
+G01 X-30 Y-30
+
+; --- PASSES INTÉRIEURES POCHE ---
+G00 Z5
+G00 X-20 Y-20
+G01 Z-3 F200
+G01 X20  Y-20 F400
+G01 X20  Y20
+G01 X-20 Y20
+G01 X-20 Y-20
+
+; --- RAINURE DIAGONALE ---
+G00 Z5
+G00 X-40 Y-40
+G01 Z-2 F200
+G01 X40 Y40 F400
+
+; --- USINAGE 5 AXES : face inclinée ---
+G00 Z10
+G00 X0 Y0
+; Inclinaison berceau A
+A30          ; Axe A à 30 degrés
+G01 X50 Y0 Z5 F300
+G01 X50 Y50 Z8
+G01 X-50 Y50 Z5
+A0           ; Retour axe A
+
+; --- ROTATION PLATEAU C ---
+G00 Z15
+C90          ; Rotation 90 degrés
+G01 X40 Y0 Z5 F400
+G01 X40 Y0 Z-2
+G02 X40 Y0 I-40 J0
+C180         ; Rotation 180 degrés
+G01 X30 Y0 Z5 F400
+G02 X30 Y0 I-30 J0
+C0           ; Retour position
+
+; --- FINITION SURFACE ---
+G00 Z5
+G00 X-40 Y-40
+G01 Z-1 F300
+; Passes balayage finition
+G01 X40  Y-40 F600
+G01 X40  Y-30
+G01 X-40 Y-30
+G01 X-40 Y-20
+G01 X40  Y-20
+G01 X40  Y-10
+G01 X-40 Y-10
+G01 X-40 Y0
+G01 X40  Y0
+G01 X40  Y10
+G01 X-40 Y10
+G01 X-40 Y20
+G01 X40  Y20
+G01 X40  Y30
+G01 X-40 Y30
+G01 X-40 Y40
+G01 X40  Y40
+
+; --- FIN DE PROGRAMME ---
+G00 Z50      ; Dégagement Z
+G00 X0 Y0    ; Retour HOME XY
+M05          ; Arrêt broche
+M30          ; Fin programme

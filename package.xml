@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dmg_mori_5axis</name>
+  <version>0.1.0</version>
+  <description>Simulation DMG MORI 5 axes avec ROS 2 et Gazebo</description>
+  <maintainer email="toi@email.com">Toi</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>ros_gz_bridge</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
